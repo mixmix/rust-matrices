@@ -1,3 +1,5 @@
+use std::ops::Add;
+
 #[derive(Debug, PartialEq)]
 struct Matrix {
     data: [[f32; 4]; 4]
@@ -23,6 +25,22 @@ impl Default for Matrix {
 
     }
 }
+impl Add for Matrix {
+    type Output = Matrix;
+
+    fn add(self, other: Self) -> Self {
+        let mut result = Matrix::default();
+
+        for (i, row)in self.data.iter().enumerate() {
+            for (j, col) in row.iter().enumerate() {
+                result.set_value(i + 1, j + 1, col + other.data[i][j])
+            }
+        }
+
+        result
+    }
+}
+
 impl Matrix {
     // "class" method
     fn identity () -> Matrix {
@@ -56,6 +74,22 @@ mod tests {
     use Matrix;
     use identity_transform;
     use multiply;
+
+    #[test]
+    fn matrix_addition () {
+        let i = Matrix::identity();
+        let j = Matrix::identity();
+        let expected = Matrix{
+            data: [
+                [2.0, 0.0, 0.0, 0.0],
+                [0.0, 2.0, 0.0, 0.0],
+                [0.0, 0.0, 2.0, 0.0],
+                [0.0, 0.0, 0.0, 2.0]
+            ]
+        };
+
+        assert_eq!(i + j, expected);
+    }
 
     #[test]
     fn unit_matrix_multiplication () {
