@@ -1,0 +1,6 @@
+[package]
+name = "matrices"
+version = "0.1.0"
+authors = ["mixmix <whimful@gmail.com>"]
+
+[dependencies]
