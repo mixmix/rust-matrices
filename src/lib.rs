@@ -7,7 +7,8 @@ use num_traits::{Num};
 struct Matrix<T> 
     where T: Default + Num + Copy 
 {
-    data: [[T; 4]; 4]
+    data: Vec<Vec<T>>
+
 
     // data: [
     //     [T; 4],
@@ -48,8 +49,18 @@ impl<T: Default + Num + Copy> Add for Matrix<T> {
 
 impl<T: Default + Num + Copy> Matrix<T> {
     // "class" method
-    fn identity () -> Matrix<T> {
-        Matrix::default()
+    fn identity (size: usize) -> Matrix<T> {
+        let mut rows = vec![T::default(); size];
+        let mut data = vec![rows; size];
+
+        for (i, r) in data.iter_mut().enumerate(){
+            for (j, c) in r.iter_mut().enumerate() {
+                if i == j{
+                    *c = T::one();
+                } 
+            }
+        } 
+        Matrix{data}
     }
 
     // first arg being self means this is an instance method
@@ -81,38 +92,52 @@ mod tests {
 
     #[test]
     fn matrix_addition () {
-        let i = Matrix::identity();
-        let j = Matrix::identity();
+        let i = Matrix::identity(4);
+        let j = Matrix::identity(4);
         let expected = Matrix{
-            data: [
-                [2.0, 0.0, 0.0, 0.0],
-                [0.0, 2.0, 0.0, 0.0],
-                [0.0, 0.0, 2.0, 0.0],
-                [0.0, 0.0, 0.0, 2.0]
+            data: vec![
+                vec![2.0, 0.0, 0.0, 0.0],
+                vec![0.0, 2.0, 0.0, 0.0],
+                vec![0.0, 0.0, 2.0, 0.0],
+                vec![0.0, 0.0, 0.0, 2.0]
             ]
         };
 
         assert_eq!(i + j, expected);
     }
 
+    #[test]
+    fn identity(){
+        let i = Matrix::identity(4);
+        let expected = Matrix{
+            data: vec![
+                vec![1.0, 0.0, 0.0, 0.0],
+                vec![0.0, 1.0, 0.0, 0.0],
+                vec![0.0, 0.0, 1.0, 0.0],
+                vec![0.0, 0.0, 0.0, 1.0]
+            ]
+        };
+        assert_eq!(i, expected);
+    }
+
     // #[test]
     fn unit_matrix_multiplication () {
-        let i = Matrix::<f32>::identity();
+        let i = Matrix::<f32>::identity(4);
 
         // assert_eq!(multiply(&i, &i), i);
     }
 
     #[test]
     fn set_value () {
-        let mut actual = Matrix::identity();
+        let mut actual = Matrix::identity(4);
         actual.set_value(2, 3, 2.0);
 
         let expected = Matrix{
-            data: [
-                [1.0, 0.0, 0.0, 0.0],
-                [0.0, 1.0, 2.0, 0.0],
-                [0.0, 0.0, 1.0, 0.0],
-                [0.0, 0.0, 0.0, 1.0]
+            data: vec![
+                vec![1.0, 0.0, 0.0, 0.0],
+                vec![0.0, 1.0, 2.0, 0.0],
+                vec![0.0, 0.0, 1.0, 0.0],
+                vec![0.0, 0.0, 0.0, 1.0]
             ]
         };
 
@@ -123,28 +148,28 @@ mod tests {
     // yet to be implemented
     fn matrix_multiplication () {
         let a = Matrix{
-            data: [
-                [0.0, 1.0, 0.0, 0.0],
-                [1.0, 0.0, 0.0, 0.0],
-                [0.0, 0.0, 1.0, 0.0],
-                [0.0, 0.0, 0.0, 1.0]
+            data: vec![
+                vec![0.0, 1.0, 0.0, 0.0],
+                vec![1.0, 0.0, 0.0, 0.0],
+                vec![0.0, 0.0, 1.0, 0.0],
+                vec![0.0, 0.0, 0.0, 1.0]
             ]
         };
         let b = Matrix{
-            data: [
-                [1.0, 0.0, 0.0, 1.0],
-                [0.0, 1.0, 0.0, 2.0],
-                [0.0, 0.0, 1.0, 0.0],
-                [0.0, 0.0, 0.0, 1.0]
+            data: vec![
+                vec![1.0, 0.0, 0.0, 1.0],
+                vec![0.0, 1.0, 0.0, 2.0],
+                vec![0.0, 0.0, 1.0, 0.0],
+                vec![0.0, 0.0, 0.0, 1.0]
             ]
         };
 
         let expected = Matrix{
-            data: [
-                [0.0, 1.0, 0.0, 2.0],
-                [1.0, 0.0, 0.0, 1.0],
-                [0.0, 0.0, 1.0, 0.0],
-                [0.0, 0.0, 0.0, 1.0]
+            data: vec![
+                vec![0.0, 1.0, 0.0, 2.0],
+                vec![1.0, 0.0, 0.0, 1.0],
+                vec![0.0, 0.0, 1.0, 0.0],
+                vec![0.0, 0.0, 0.0, 1.0]
             ]
         };
 
