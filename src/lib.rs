@@ -1,9 +1,11 @@
-extern crate num;
+extern crate num_traits;
 use std::ops::Add;
+use num_traits::{Num};
+
 
 #[derive(Default, Debug, PartialEq)]
 struct Matrix<T> 
-    where T: Default + Add
+    where T: Default + Num + Copy 
 {
     data: [[T; 4]; 4]
 
@@ -28,7 +30,7 @@ struct Matrix<T>
 //     }
 // }
 
-impl<T: Default + Add> Add for Matrix<T> {
+impl<T: Default + Num + Copy> Add for Matrix<T> {
     type Output = Matrix<T>;
 
     fn add(self, other: Self) -> Self {
@@ -44,7 +46,7 @@ impl<T: Default + Add> Add for Matrix<T> {
     }
 }
 
-impl<T: Default + Add> Matrix<T> {
+impl<T: Default + Num + Copy> Matrix<T> {
     // "class" method
     fn identity () -> Matrix<T> {
         Matrix::default()
@@ -95,7 +97,7 @@ mod tests {
 
     // #[test]
     fn unit_matrix_multiplication () {
-        let i = Matrix::identity();
+        let i = Matrix::<f32>::identity();
 
         // assert_eq!(multiply(&i, &i), i);
     }
